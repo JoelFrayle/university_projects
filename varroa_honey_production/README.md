@@ -4,12 +4,12 @@ This repository contains a project from my undergraduate work in Biomedical Engi
 
 ## Overview
 
-- **Paper**: The [`doc/paper_english.tex`](./doc/paper_english.tex) file provides a detailed academic paper (originally written in Spanish, now translated to English) with:
+- **Paper**: The [`paper_english.tex`](./paper_english.tex) file provides a detailed academic paper (originally written in Spanish, now translated to English) with:
   - Biological background on honeybees and the *Varroa destructor* parasite.
   - Mathematical modeling approach (differential equations, parameters).
   - Simulation results, discussion, and potential future work.
 
-- **Python Script**: The [`src/model_varroa.py`](./src/model_varroa.py) implements the mathematical model. It simulates:
+- **Python Script**: The [`model_varroa.py`](./model_varroa.py) implements the mathematical model. It simulates:
   1. **Larvae (healthy vs. infected)**  
   2. **Adult bees (healthy vs. infected)**  
   3. **Parasites (female and male)**  
