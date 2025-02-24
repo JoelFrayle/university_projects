@@ -4,7 +4,7 @@ This repository contains a project from my undergraduate work in Biomedical Engi
 
 ## Overview
 
-- **Paper**: The [`paper_english.tex`](./varroa_honey_production/Proyecto_Final_Modelado_ingles.pdf) file provides a detailed academic paper (originally written in Spanish, now translated to English) with:
+- **Paper**: The [`Mathematical Model to Measure Honey Production Variation in a Bee Colony Infected by Varroa Destructor.pdf`](./Proyecto_Final_Modelado_ingles.pdf) file provides a detailed academic paper (originally written in Spanish, now translated to English) with:
   - Biological background on honeybees and the *Varroa destructor* parasite.
   - Mathematical modeling approach (differential equations, parameters).
   - Simulation results, discussion, and potential future work.
