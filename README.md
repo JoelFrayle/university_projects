@@ -4,7 +4,7 @@ This repository contains a collection of my past university projects
 from my undergraduate studies in Biomedical Engineering.
 
 ## Contents
-1. [Bee Colony Simulation](./bee_colony_simulation)  
+1. [Bee Colony Simulation](./varroa_honey_production)  
    - A Matematical Model of a Bee Colony Infection
 
 ## Disclaimer
