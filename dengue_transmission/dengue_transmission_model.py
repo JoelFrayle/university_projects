@@ -1,5 +1,3 @@
-from sys import maxsize
-
 import numpy as np
 from scipy.integrate import odeint
 import matplotlib.pyplot as plt
@@ -197,8 +195,8 @@ params_larvac = params + [0.013, 1, 0, 1]
 solution_larvac = odeint(model_controls, y0, t, args=(params_larvac,))
 A_lv, MS_lv, ME1_lv, ME2_lv, MI1_lv, MI2_lv, HS_lv, HE1_lv, HE2_lv, HI1_lv, HI2_lv, HR1_lv, HR2_lv, HE12_lv, HE21_lv, HI12_lv, HI21_lv, HR_lv = solution_larvac.T
 
-# Solve the system with intensive vaccination
-params_vac = params + [0.13, 1, 0, 0]
+# Solve the system with vaccination
+params_vac = params + [0.013, 1, 0, 0]
 solution_vac = odeint(model_controls, y0, t, args=(params_vac,))
 A_v, MS_v, ME1_v, ME2_v, MI1_v, MI2_v, HS_v, HE1_v, HE2_v, HI1_v, HI2_v, HR1_v, HR2_v, HE12_v, HE21_v, HI12_v, HI21_v, HR_v = solution_vac.T
 
@@ -643,6 +641,6 @@ plt.text(270, max(MS_v) * 0.95, "Dry", fontsize=12, bbox=dict(facecolor='lightco
 plt.xlabel("Time (days)")
 plt.ylabel("Number of individuals")
 plt.legend()
-plt.title("Dengue model mosquitoes with intensive vaccination")
+plt.title("Dengue model mosquitoes with vaccination")
 plt.grid()
 plt.show()
