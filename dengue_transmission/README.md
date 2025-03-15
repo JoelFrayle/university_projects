@@ -1,6 +1,6 @@
 # Mathematical Model for Dengue Transmission Dynamics with Seasonal Variations and Control Strategies  
 
-This repository contains a project from my undergraduate work in Biomedical Engineering, where we developed a mathematical model to simulate the transmission dynamics of dengue virus in human and mosquito populations. The model is based on the epidemiological context of Medellín, Colombia, and evaluates the effectiveness of various control strategies (and their combinations) to determine the most effective approach for reducing dengue transmission.  
+This repository contains a project from my undergraduate work in Biomedical Engineering, where we developed a mathematical model to simulate the transmission dynamics of dengue virus in human and mosquito populations. The model is based on the epidemiological context of Piedecuesta, Santander, Colombia, and evaluates the effectiveness of various control strategies (and their combinations) to determine the most effective approach for reducing dengue transmission.  
 
 ## Overview  
 - **Paper**: The [`Dengue_Transmission_Model.pdf`](./Dengue_Transmission_Model.pdf) file provides a detailed academic paper (originally written in Spanish, now translated to English) with:  
