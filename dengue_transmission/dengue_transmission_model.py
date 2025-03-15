@@ -37,11 +37,11 @@ def K0_t(t):
 def mu_i_t(t):
     day_of_year = t % 365
     if day_of_year < 120:  # Rainy season
-        return 0.958 * np.exp(-0.0151 * t)
-    elif day_of_year < 220:  # Normal season
         return 0.960 * np.exp(-0.0151 * t)
+    elif day_of_year < 220:  # Normal season
+        return 0.958 * np.exp(-0.0151 * (t-120))
     else:  # Dry season
-        return 0.941 * np.exp(-0.0149 * t)
+        return 0.941 * np.exp(-0.0149 * (t-220))
 
 # Mortality rate due to larvicide application
 def mu_l_t(t):
@@ -49,9 +49,9 @@ def mu_l_t(t):
     if day_of_year < 120:  # Rainy season
         return 0.810 * np.exp(-0.00139 * t)
     elif day_of_year < 220:  # Normal season
-        return 0.825 * np.exp(-0.00141 * t)
+        return 0.825 * np.exp(-0.00141 * (t-120))
     else:  # Dry season
-        return 0.884 * np.exp(-0.00145 * t)
+        return 0.884 * np.exp(-0.00145 * (t-220))
 
 # Model of the system of differential equations
 def model_controls(y, t, params):
@@ -174,6 +174,11 @@ A_ml, MS_ml, ME1_ml, ME2_ml, MI1_ml, MI2_ml, HS_ml, HE1_ml, HE2_ml, HI1_ml, HI2_
 params_mechvac = params + [0.013, 0.5, 0, 0]
 solution_mechvac = odeint(model_controls, y0, t, args=(params_mechvac,))
 A_mv, MS_mv, ME1_mv, ME2_mv, MI1_mv, MI2_mv, HS_mv, HE1_mv, HE2_mv, HI1_mv, HI2_mv, HR1_mv, HR2_mv, HE12_mv, HE21_mv, HI12_mv, HI21_mv, HR_mv = solution_mechvac.T
+
+# Solve the system with insecticide
+params_ins = params + [0, 1, 1, 0]
+solution_ins = odeint(model_controls, y0, t, args=(params_ins,))
+A_i, MS_i, ME1_i, ME2_i, MI1_i, MI2_i, HS_i, HE1_i, HE2_i, HI1_i, HI2_i, HR1_i, HR2_i, HE12_i, HE21_i, HI12_i, HI21_i, HR_i = solution_ins.T
 
 # Solve the system with insecticide and larvicide
 params_inslar = params + [0, 1, 1, 1]
@@ -425,7 +430,51 @@ plt.title("Dengue model mosquitoes with mechanical control and vaccination")
 plt.grid()
 plt.show()
 
-# Graph 11: Healthy, Exposed, Infected, and Recovered humans with insecticide and larvicide
+# Graph 11: Healthy, Exposed, Infected, and Recovered humans with insecticide
+plt.figure(figsize=(8, 5))
+plt.plot(t, HS_i, label="HS")
+plt.plot(t, HE1_i, label="HE1")
+plt.plot(t, HE12_i, label="HE12")
+plt.plot(t, HE2_i, label="HE2")
+plt.plot(t, HE21_i, label="HE21")
+plt.plot(t, HI1_i, label="HI1")
+plt.plot(t, HI21_i, label="HI21")
+plt.plot(t, HI2_i, label="HI2")
+plt.plot(t, HI12_i, label="HI12")
+plt.plot(t, HR1_i, label="HR1")
+plt.plot(t, HR2_i, label="HR2")
+plt.plot(t, HR_i, label="HR")
+plt.axvline(120, color="red", linewidth=1, linestyle="dashed")
+plt.axvline(220, color="red", linewidth=1, linestyle="dashed")
+plt.text(60, max(HS_i) * 0.95, "Rainy", fontsize=12, bbox=dict(facecolor='lightblue', alpha=0.5))
+plt.text(170, max(HS_i) * 0.95, "Normal", fontsize=12, bbox=dict(facecolor='lightgreen', alpha=0.5))
+plt.text(270, max(HS_i) * 0.95, "Dry", fontsize=12, bbox=dict(facecolor='lightcoral', alpha=0.5))
+plt.xlabel("Time (days)")
+plt.ylabel("Number of individuals")
+plt.legend()
+plt.title("Dengue model human population with insecticide")
+plt.grid()
+plt.show()
+
+# Graph 12: Healthy, Exposed, and Infected mosquitoes with insecticide
+plt.plot(t, MS_i, label="MS")
+plt.plot(t, ME1_i, label="ME1")
+plt.plot(t, ME2_i, label="ME2")
+plt.plot(t, MI1_i, label="MI1")
+plt.plot(t, MI2_i, label="MI2")
+plt.axvline(120, color="red", linewidth=1, linestyle="dashed")
+plt.axvline(220, color="red", linewidth=1, linestyle="dashed")
+plt.text(60, max(MS_i) * 0.9, "Rainy", fontsize=12, bbox=dict(facecolor='lightblue', alpha=0.5))
+plt.text(170, max(MS_i) * 0.9, "Normal", fontsize=12, bbox=dict(facecolor='lightgreen', alpha=0.5))
+plt.text(270, max(MS_i) * 0.9, "Dry", fontsize=12, bbox=dict(facecolor='lightcoral', alpha=0.5))
+plt.xlabel("Time (days)")
+plt.ylabel("Number of individuals")
+plt.legend()
+plt.title("Dengue model mosquitoes with insecticide")
+plt.grid()
+plt.show()
+
+# Graph 13: Healthy, Exposed, Infected, and Recovered humans with insecticide and larvicide
 plt.figure(figsize=(8, 5))
 plt.plot(t, HS_il, label="HS")
 plt.plot(t, HE1_il, label="HE1")
@@ -451,7 +500,7 @@ plt.title("Dengue model human population with insecticide and larvicide")
 plt.grid()
 plt.show()
 
-# Graph 12: Healthy, Exposed, and Infected mosquitoes with insecticide and larvicide
+# Graph 14: Healthy, Exposed, and Infected mosquitoes with insecticide and larvicide
 plt.plot(t, MS_il, label="MS")
 plt.plot(t, ME1_il, label="ME1")
 plt.plot(t, ME2_il, label="ME2")
@@ -469,7 +518,7 @@ plt.title("Dengue model mosquitoes with insecticide and larvicide")
 plt.grid()
 plt.show()
 
-# Graph 13: Healthy, Exposed, Infected, and Recovered humans with insecticide and vaccination
+# Graph 15: Healthy, Exposed, Infected, and Recovered humans with insecticide and vaccination
 plt.figure(figsize=(8, 5))
 plt.plot(t, HS_iv, label="HS")
 plt.plot(t, HE1_iv, label="HE1")
@@ -495,7 +544,7 @@ plt.title("Dengue model human population with insecticide and vaccination")
 plt.grid()
 plt.show()
 
-# Graph 14: Healthy, Exposed, and Infected mosquitoes with insecticide and vaccination
+# Graph 16: Healthy, Exposed, and Infected mosquitoes with insecticide and vaccination
 plt.plot(t, MS_iv, label="MS")
 plt.plot(t, ME1_iv, label="ME1")
 plt.plot(t, ME2_iv, label="ME2")
@@ -513,7 +562,7 @@ plt.title("Dengue model mosquitoes with insecticide and vaccination")
 plt.grid()
 plt.show()
 
-# Graph 15: Healthy, Exposed, Infected, and Recovered humans with larvicide
+# Graph 17: Healthy, Exposed, Infected, and Recovered humans with larvicide
 plt.figure(figsize=(8, 5))
 plt.plot(t, HS_l, label="HS")
 plt.plot(t, HE1_l, label="HE1")
@@ -539,7 +588,7 @@ plt.title("Dengue model human population with larvicide")
 plt.grid()
 plt.show()
 
-# Graph 16: Healthy, Exposed, and Infected mosquitoes with larvicide
+# Graph 18: Healthy, Exposed, and Infected mosquitoes with larvicide
 plt.plot(t, MS_l, label="MS")
 plt.plot(t, ME1_l, label="ME1")
 plt.plot(t, ME2_l, label="ME2")
@@ -557,7 +606,7 @@ plt.title("Dengue model mosquitoes with larvicide and vaccination")
 plt.grid()
 plt.show()
 
-# Graph 17: Healthy, Exposed, Infected, and Recovered humans with larvicide and vaccination
+# Graph 19: Healthy, Exposed, Infected, and Recovered humans with larvicide and vaccination
 plt.figure(figsize=(8, 5))
 plt.plot(t, HS_lv, label="HS")
 plt.plot(t, HE1_lv, label="HE1")
@@ -583,7 +632,7 @@ plt.title("Dengue model human population with larvicide and vaccination")
 plt.grid()
 plt.show()
 
-# Graph 17: Healthy, Exposed, and Infected mosquitoes with larvicide and vaccination
+# Graph 20: Healthy, Exposed, and Infected mosquitoes with larvicide and vaccination
 plt.plot(t, MS_lv, label="MS")
 plt.plot(t, ME1_lv, label="ME1")
 plt.plot(t, ME2_lv, label="ME2")
@@ -601,7 +650,7 @@ plt.title("Dengue model mosquitoes with larvicide and vaccination")
 plt.grid()
 plt.show()
 
-# Graph 18: Healthy, Exposed, Infected, and Recovered humans with intensive vaccination
+# Graph 21: Healthy, Exposed, Infected, and Recovered humans with intensive vaccination
 plt.figure(figsize=(8, 5))
 plt.plot(t, HS_v, label="HS")
 plt.plot(t, HE1_v, label="HE1")
@@ -623,11 +672,11 @@ plt.text(270, max(HS_v) * 0.95, "Dry", fontsize=12, bbox=dict(facecolor='lightco
 plt.xlabel("Time (days)")
 plt.ylabel("Number of individuals")
 plt.legend()
-plt.title("Dengue model human population with intensive vaccination")
+plt.title("Dengue model human population with vaccination")
 plt.grid()
 plt.show()
 
-# Graph 19: Healthy, Exposed, and Infected mosquitoes with intensive vaccination
+# Graph 22: Healthy, Exposed, and Infected mosquitoes with intensive vaccination
 plt.plot(t, MS_v, label="MS")
 plt.plot(t, ME1_v, label="ME1")
 plt.plot(t, ME2_v, label="ME2")
