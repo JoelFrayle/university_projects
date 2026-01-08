@@ -1,0 +1,109 @@
+flowchart TD
+  A([Inicio: define tu pregunta]) --> B{¿Tus datos vienen de...}
+  B -->|Varios estudios ya publicados| MA[Meta-análisis]
+  B -->|Un solo estudio/dataset| C{¿Qué quieres lograr?}
+
+  %% =======================
+  %% Meta-analysis branch
+  %% =======================
+  MA --> MA1[Define effect size y_i y varianza v_i por estudio]
+  MA1 --> MA2{¿Asumes un efecto verdadero común?}
+  MA2 -->|Sí| MAF[Fixed-effect: w_i=1/v_i]
+  MA2 -->|No / hay heterogeneidad| MAR[Random-effects: w_i=1/(v_i+tau^2)]
+  MAR --> MA3[Evalúa heterogeneidad: Q, tau^2, I^2]
+  MA3 --> MA4{¿Quieres explicar heterogeneidad?}
+  MA4 -->|Sí| MA5[Meta-regresión (mixed-effects)]
+  MA4 -->|No| MA6[Forest plot / Funnel plot / reporte]
+
+  %% =======================
+  %% Objective branch
+  %% =======================
+  C -->|Describir / estimar frecuencias| D1[Descriptiva: prevalencia, medias/medianas, tablas]
+  C -->|Asociación / comparación / inferencia| D2[Testing / modelos]
+  C -->|Predecir / clasificar| D3[Modelado predictivo]
+
+  %% =======================
+  %% Outcome type
+  %% =======================
+  D2 --> E{Tipo de outcome (Y)}
+  D3 --> E
+
+  E -->|Tiempo-a-evento| S0[Survival analysis]
+  E -->|Binario (0/1)| L0[Logística / clasificación]
+  E -->|Continuo| R0[Lineal / rangos / mixtos]
+  E -->|Categórico (tablas)| T0[Contingency tables]
+  E -->|Conteos| P0[Poisson/GLM (si aplica)]
+
+  %% =======================
+  %% Survival branch
+  %% =======================
+  S0 --> S1{¿Hay censura? (right/left)}
+  S1 -->|Sí (típico)| S2[Define (T, δ), asume censura no-informativa]
+  S1 -->|No| S2
+  S2 --> S3{¿Qué necesitas?}
+  S3 -->|Describir S(t) global| S4[Kaplan–Meier + CI (Greenwood)]
+  S3 -->|Comparar grupos sin covariables| S5[Log-rank test]
+  S3 -->|Ajustar por covariables| S6[Cox PH: h(t|X)=h0(t)exp(Xβ)]
+  S3 -->|Extrapolar / asumir forma| S7[Paramétrico: Exponencial/Weibull]
+  S3 -->|Interpretar efectos en escala de tiempo| S8[AFT: aceleración del tiempo]
+
+  S6 --> S9{¿Se cumple PH?}
+  S9 -->|Sí| S10[Interpreta HR=exp(β)]
+  S9 -->|No| S11{¿Cómo lo arreglas?}
+  S11 -->|Estratos| S12[Cox estratificado: h0k(t)]
+  S11 -->|Efectos dependientes del tiempo| S13[β(t) o interacción X·f(t)]
+  S11 -->|Covariables time-varying| S14[X(t) (formato start/stop)]
+  S11 -->|Dependencia por cluster| S15[Frailty (shared/nested)]
+  S14 --> S16[Evita immortal time bias (ej. trasplantes)]
+
+  %% =======================
+  %% Logistic / classification branch
+  %% =======================
+  L0 --> L1[GLM Binomial + link logit]
+  L1 --> L2{¿Clasificar con umbral?}
+  L2 -->|Sí| L3[Confusion matrix: sens/spec/PPV/F1]
+  L3 --> L4[ROC (trade-off por umbral)]
+  L3 --> L5{¿Desbalance fuerte?}
+  L5 -->|Sí| L6[Ajusta umbral + re-sampling + CV]
+  L2 -->|No| L7[Modela riesgo/probabilidad e interpreta OR=exp(β)]
+
+  %% =======================
+  %% Contingency tables branch
+  %% =======================
+  T0 --> T1{¿Esperados suficientes? (Cochran)}
+  T1 -->|Sí| T2[Chi-cuadrado de asociación + df=(r-1)(c-1)]
+  T1 -->|No| T3[Fisher exact (2x2)]
+  T2 --> T4[Medidas de efecto: riesgo abs, RR, OR + CI en log(OR)]
+  T3 --> T4
+
+  %% =======================
+  %% Continuous / regression branch
+  %% =======================
+  R0 --> R1{¿Observaciones independientes?}
+  R1 -->|Sí| R2{¿Supuestos razonables? (≈normalidad + homocedasticidad)}
+  R1 -->|No (repetidas/cluster)| M0[Modelos mixtos (LMM): y=Xβ+Zb+ε]
+
+  R2 -->|Sí| R3[LM: t-test/ANOVA/regresión lineal; OLS]
+  R2 -->|No| R4{¿Dato ordinal/no normal o outliers?}
+  R4 -->|Sí| R5[No paramétricos: Mann–Whitney / Wilcoxon / Sign]
+  R4 -->|No, pero varianza cambia| R6[WLS/GLS (estructura R)]
+  R5 --> R7[Correlación: Spearman/Kendall (si no lineal/ordinal)]
+  R3 --> R8[Correlación: Pearson (si lineal + supuestos)]
+
+  M0 --> M1[Var(y)=Z D Z' + R]
+  M1 --> M2{¿Estimación varianzas?}
+  M2 -->|ML| M3[ML (puede sesgar σ²)]
+  M2 -->|REML| M4[REML (corrige df de β)]
+  M0 --> M5[PVRE: proporción varianza por random effects]
+
+  %% =======================
+  %% Multiple testing & resampling (global add-on)
+  %% =======================
+  D2 --> MT{¿Muchos tests simultáneos?}
+  MT -->|Sí| MT1{¿Qué quieres controlar?}
+  MT1 -->|FWER| MT2[Bonferroni / Holm]
+  MT1 -->|FDR| MT3[BH (Benjamini–Hochberg)]
+  MT -->|No| MT4[Reporta p-values + tamaño de efecto]
+  D2 --> RS{¿Distribución teórica dudosa / n pequeño?}
+  RS -->|Sí| RS1[Permutation / resampling p-value]
+  RS -->|No| RS2[Tests estándar]
